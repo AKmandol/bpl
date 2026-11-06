@@ -1,0 +1,46 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+:root {
+    --bs-body-font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+    --bs-body-bg: #f5f6f3;
+    --bs-body-color: #202b25;
+    --bs-primary: #14532d;
+    --bs-primary-rgb: 20, 83, 45;
+}
+
+.admin-sidebar {
+    min-height: calc(100vh - 73px);
+}
+
+.admin-sidebar .nav-link {
+    color: #59645d;
+    border-radius: 0.75rem;
+    font-weight: 600;
+}
+
+.admin-sidebar .nav-link.active {
+    color: #123b24;
+    background: #eaf3e8;
+}
+
+.admin-sidebar .nav-link.disabled {
+    color: #9aa39d;
+}
+
+.admin-brand-mark {
+    display: inline-grid;
+    width: 2.5rem;
+    height: 2.5rem;
+    place-items: center;
+    border-radius: 0.875rem;
+    background: #123b24;
+    color: #d9f99d;
+    font-weight: 800;
+}
+
+.admin-table th {
+    color: #68736c;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
