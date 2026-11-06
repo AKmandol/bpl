@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Category;
 use App\Models\Subcategory;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class SubcategorySeeder extends Seeder
 {
@@ -23,13 +24,29 @@ class SubcategorySeeder extends Seeder
 
             foreach ($names as $name) {
                 Subcategory::firstOrCreate(
-                    ['slug' => str($name)->slug()->toString()],
                     [
                         'category_id' => $category->id,
                         'name' => $name,
                     ],
+                    [
+                        'slug' => $this->uniqueSlug($name),
+                    ],
                 );
             }
         }
+    }
+
+    private function uniqueSlug(string $name): string
+    {
+        $baseSlug = Str::slug($name) ?: 'subcategory';
+        $slug = $baseSlug;
+        $suffix = 2;
+
+        while (Subcategory::query()->where('slug', $slug)->exists()) {
+            $slug = $baseSlug.'-'.$suffix;
+            $suffix++;
+        }
+
+        return $slug;
     }
 }

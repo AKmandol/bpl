@@ -69,11 +69,11 @@ For a new, empty database:
 
 ```powershell
 php artisan key:generate
-php artisan migrate --seed
+php artisan migrate:fresh --seed
 php artisan storage:link
 ```
 
-The seeders add sample Electronics and Clothing categories, their subcategories, and four products. The default seeder also creates a development test-user record; this application does not include a login screen.
+The seeders add sample Electronics and Clothing categories, their subcategories, and four products. They can be run again safely without adding duplicate sample catalog records.
 
 If you are restoring the submitted database export described below, import it into an empty database instead of running `migrate --seed` again. The export already contains the schema and seeded data.
 
