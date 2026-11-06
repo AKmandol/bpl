@@ -1,58 +1,138 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# E-commerce CRUD
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A small Laravel storefront and admin area for managing product categories, subcategories, and products.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Storefront at `/` with products grouped by category and subcategory navigation.
+- Product listing pagination (12 products per page) and slug-based category, subcategory, and product detail URLs.
+- Admin area at `/admin`, with paginated CRUD screens for categories, subcategories, and products (10 rows per page).
+- Create and edit forms in Bootstrap modals, with delete confirmation modals.
+- Product image upload, replacement, and cleanup when a product is deleted.
+- Server-side validation and database foreign keys to protect catalog relationships.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Requirements
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- PHP 8.3 or newer in the 8.x series, with Composer.
+- Node.js and npm (a current LTS release is recommended).
+- MySQL
 
-## Learning Laravel
+The project uses Laravel Framework 13 and Bootstrap 5 for the admin modals. The storefront styles use the Tailwind setup already included in the Laravel starter app.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Project structure
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- `app/Http/Controllers` — storefront and category, subcategory, and product request handling.
+- `app/Models` — `Category`, `Subcategory`, and `Product` Eloquent relationships.
+- `database/migrations` — catalog table definitions, keys, and constraints.
+- `database/seeders` — repeatable sample categories, subcategories, and products.
+- `resources/views/shop` — storefront listing and product detail pages.
+- `resources/views/admin` — catalog tables and CRUD modal forms.
+- `resources/views/layouts` — shared storefront and admin layouts.
+- `routes/web.php` — storefront and admin web routes.
+- `resources/css` and `resources/js` — Vite assets; Bootstrap modal behavior is isolated to the admin assets.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Install and run locally
 
-## Agentic Development
+### 1. Install dependencies
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Run these commands from the project root:
 
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```powershell
+composer install
+npm install
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Create the local environment file
 
-## Contributing
+```powershell
+Copy-Item .env.example .env
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 3. Configure the database
 
-## Code of Conduct
+Create an empty database in HeidiSQL or phpMyAdmin, then set these values in `.env`:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```dotenv
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=dokan_market
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-## Security Vulnerabilities
+Use the database name and credentials configured on your machine.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 4. Generate the app key, create tables, and load sample data
 
-## License
+For a new, empty database:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```powershell
+php artisan key:generate
+php artisan migrate --seed
+php artisan storage:link
+```
+
+The seeders add sample Electronics and Clothing categories, their subcategories, and four products. The default seeder also creates a development test-user record; this application does not include a login screen.
+
+If you are restoring the submitted database export described below, import it into an empty database instead of running `migrate --seed` again. The export already contains the schema and seeded data.
+
+### 5. Build assets and start the app
+
+```powershell
+npm run build
+php artisan serve
+```
+
+## How the application is organized
+
+### Storefront
+
+- `/` displays the product catalog and category sidebar.
+- `/categories/{slug}` filters products to a category.
+- `/subcategories/{slug}` filters products to a subcategory.
+- `/products/{slug}` displays product details.
+- The sidebar and product pagination use normal server-rendered links; no custom JavaScript is needed for browsing.
+
+### Admin
+
+- `/admin` redirects to `/admin/categories`.
+- `/admin/categories` manages categories.
+- `/admin/subcategories` manages subcategories and their parent categories.
+- `/admin/products` manages product details, prices, categories, subcategories, and images.
+- The Bootstrap JavaScript bundle powers modal open/close behavior. A small admin script reopens the relevant form after a validation error so the user can correct it.
+
+Admin routes are not protected by authentication because login was outside the stated assessment requirements. Keep this demo on a local or otherwise private environment; add authentication before exposing admin tools publicly.
+
+## Data model and relationships
+
+```text
+Category 1 ─── many Subcategories 1 ─── many Products
+Category 1 ─── many Products
+```
+
+- `Category` has many `Subcategory` and `Product` records.
+- `Subcategory` belongs to one category and has many products.
+- `Product` belongs to one category and one subcategory.
+- Products store both `category_id` and `subcategory_id`. A composite foreign key ensures the product's selected subcategory belongs to its selected category.
+- Category names and slugs are unique. Subcategory names are unique within their category; subcategory slugs are unique. Product slugs are unique and generated from product names.
+- Categories cannot be deleted while subcategories or products refer to them. Subcategories cannot be deleted while products refer to them. Products can be deleted; their uploaded image is removed as well.
+
+The migrations are in `database/migrations`, models and Eloquent relationships are in `app/Models`, and catalog sample data is in `database/seeders`.
+
+## Suggested walkthrough
+
+1. Open the storefront and browse the full catalog.
+2. Choose a category, then a subcategory, and open a product detail page.
+3. Follow **Go to admin**; create a category, then a subcategory under it, then a product.
+4. Edit each record from its modal and confirm the updated details appear in the table or shop.
+5. Try to delete a category or subcategory that still has related records; the app should explain why it is blocked. Delete a product to confirm its confirmation modal appears.
+
+## Validation and image handling
+
+- Category and subcategory names are required, limited to 255 characters, and checked for the appropriate uniqueness rule.
+- A product requires a category, a matching subcategory, a name, a description, and a new price.
+- Prices must be non-negative and use up to two decimal places. The old price is optional; if provided, it must be at least the new price.
+- Product images are optional. Accepted formats are JPG, PNG, and WebP, up to 2 MB.
+- Uploaded images are stored under `storage/app/public/products`; `php artisan storage:link` exposes them through `public/storage`.
+

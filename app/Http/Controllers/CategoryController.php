@@ -78,6 +78,10 @@ class CategoryController extends Controller
 
     private function uniqueSlug(string $name, ?Category $category = null): string
     {
+        if ($category && Str::slug($name) === Str::slug($category->name)) {
+            return $category->slug;
+        }
+
         $baseSlug = Str::slug($name) ?: 'category';
         $slug = $baseSlug;
         $suffix = 2;

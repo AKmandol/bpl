@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShopController;
+use App\Http\Controllers\SubcategoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [ShopController::class, 'index'])->name('shop.index');
@@ -12,4 +14,6 @@ Route::redirect('/admin', '/admin/categories')->name('admin.home');
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('categories', CategoryController::class)->except(['create', 'edit', 'show']);
+    Route::resource('subcategories', SubcategoryController::class)->except(['create', 'edit', 'show']);
+    Route::resource('products', ProductController::class)->except(['create', 'edit', 'show']);
 });
